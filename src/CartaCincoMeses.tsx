@@ -20,10 +20,9 @@ interface Pieza {
 }
 
 const CartaCincoMeses: React.FC<CartaCincoMesesProps> = ({
-  nombreElla = "Nicole",
+  nombreElla = "Mi amor",
   mensaje = `Cinco meses parecen poco cuando los cuento, y un mundo entero cuando los siento.
-
-Gracias por las risas, tu compañía y por hacer que cada día tibio se sienta como un pedacito de hogar.
+Gracias por las risas, por tu compañía y por hacer que cada día tibio se sienta como un pedacito de hogar.
 
 Te amo, hoy y todos los meses que vienen.`,
   fecha = "5 meses · contigo",
@@ -187,12 +186,14 @@ const SparkIcon: React.FC = () => (
 const cssStyles = `
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Dancing+Script:wght@500;700&family=Cormorant+Upright:wght@400;500&display=swap');
 
+/* === Reset global mínimo: el fondo se ve aún antes de que monte React,
+   y el body siempre cubre todo el viewport, incluso con la barra del browser === */
 html, body, #root {
   margin: 0;
   padding: 0;
   width: 100%;
-  min-height: 100vh;         
-  min-height: 100dvh;  
+  min-height: 100vh;          /* fallback para navegadores antiguos */
+  min-height: 100dvh;         /* dynamic viewport height: se adapta a la barra del browser */
   background: #2a0710;
   -webkit-text-size-adjust: 100%;
   overflow-x: hidden;
@@ -212,6 +213,8 @@ html, body, #root {
 
   position: relative;
   width: 100%;
+  /* Triple fallback: si el navegador soporta dvh lo usa,
+     si no svh, si no vh tradicional. */
   min-height: 100vh;
   min-height: 100svh;
   min-height: 100dvh;
@@ -220,7 +223,7 @@ html, body, #root {
   display: flex;
   align-items: center;
   justify-content: center;
-
+  /* Respeta safe-area en iPhones con notch / barra de home */
   padding:
     calc(40px + env(safe-area-inset-top, 0px))
     calc(20px + env(safe-area-inset-right, 0px))
@@ -229,6 +232,9 @@ html, body, #root {
   isolation: isolate;
 }
 
+/* ===== Capa de fondo FIJA al viewport =====
+   Usa position:fixed para que el fondo NUNCA quede corto cuando
+   el contenido es más alto que la pantalla (móvil con scroll). */
 .bg-fixed {
   position: fixed;
   inset: 0;
@@ -377,13 +383,14 @@ html, body, #root {
 .title-cinco {
   font-family: 'Dancing Script', cursive;
   font-weight: 700;
-  font-size: clamp(4rem, 14vw, 7.5rem);
+  font-size: clamp(4.5rem, 16vw, 7.5rem);
   background: linear-gradient(180deg, var(--burgundy-mid), var(--burgundy-deep));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: -0.15em;
   text-shadow: 0 2px 0 rgba(122,31,51,0.05);
+  line-height: 1;
 }
 .title-meses {
   font-family: 'Cormorant Garamond', serif;
@@ -438,8 +445,6 @@ html, body, #root {
     drop-shadow(0 8px 12px rgba(74, 14, 31, 0.2))
     drop-shadow(0 2px 4px rgba(74, 14, 31, 0.15));
   animation: cat-breathe 4.5s ease-in-out infinite;
-  -webkit-mask-image: radial-gradient(ellipse at center, black 75%, transparent 98%);
-          mask-image: radial-gradient(ellipse at center, black 75%, transparent 98%);
 }
 @keyframes cat-breathe {
   0%, 100% { transform: translateY(0) scale(1); }
@@ -450,13 +455,13 @@ html, body, #root {
   margin-top: clamp(12px, 3vw, 18px);
   text-align: center;
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(1rem, 3vw, 1.2rem);
-  line-height: 1.7;
+  font-size: clamp(1.05rem, 3.2vw, 1.2rem);
+  
   color: #2a0a14;
   font-weight: 400;
 }
 .msg-line {
-  margin: 0.35em 0;
+  margin: 0.7em 0;
   opacity: 0;
   transform: translateY(8px);
   animation: line-in 0.9s ease forwards;
@@ -520,22 +525,49 @@ html, body, #root {
 @media (max-width: 600px) {
   .carta-root {
     padding:
-      calc(24px + env(safe-area-inset-top, 0px))
-      14px
-      calc(24px + env(safe-area-inset-bottom, 0px))
-      14px;
+      calc(16px + env(safe-area-inset-top, 0px))
+      10px
+      calc(20px + env(safe-area-inset-bottom, 0px))
+      10px;
   }
   .letter {
-    padding: 28px 20px 24px;
+    padding: 24px 18px 22px;
+  }
+  /* En mobile la imagen no necesita ser tan grande */
+  .cats-img-frame {
+    max-width: 300px;
+  }
+  /* Header más compacto en mobile */
+  .ornament { margin-bottom: 10px; }
+  .ornament svg { width: 90px; height: 18px; }
+  .dedication { margin-top: 10px; }
+  .cats-wrap { margin: 14px auto 6px; }
+  .letter-body { line-height: 1.65; }
+  /* Pills más compactos para que los 5 entren en una sola fila */
+  .pill {
+    padding: 5px 10px;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+  }
+  .counter {
+    gap: 6px;
   }
 }
 
 @media (max-width: 380px) {
   .letter {
-    padding: 24px 16px 20px;
+    padding: 22px 14px 20px;
   }
-  .signature { gap: 8px; }
-  .pill { padding: 5px 9px; }
+  .cats-img-frame {
+    max-width: 260px;
+  }
+  .signature { gap: 6px; }
+  .pill {
+    padding: 4px 8px;
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+  }
+  .counter { gap: 5px; }
 }
 
 @media (min-width: 1200px) {
