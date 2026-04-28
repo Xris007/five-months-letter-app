@@ -20,7 +20,7 @@ interface Pieza {
 }
 
 const CartaCincoMeses: React.FC<CartaCincoMesesProps> = ({
-  nombreElla = "Mi amor",
+  nombreElla = "Nicole",
   mensaje = `Cinco meses parecen poco cuando los cuento, y un mundo entero cuando los siento.
 
 Gracias por las risas, tu compañía y por hacer que cada día tibio se sienta como un pedacito de hogar.
